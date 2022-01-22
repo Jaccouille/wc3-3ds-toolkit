@@ -1,7 +1,8 @@
 macroScript BatchLoad category:"AnimationScript" tooltip:"Max Batch Anim Load" Icon:#("MergeAnim",4) (
 
+-- Try to guess the sequence name using the filename
 function getSequenceName filename = (
-    local sequenceName = "Not Named"
+    local sequenceName = "unnamed"
     local animKeyWords = filterstring filename "_."
     local commonWord = #("attack", "stand", "sprint", "run", "die", "weaponskill")
 
@@ -39,16 +40,17 @@ function getMaxFiles dir = (
 	theFiles
 )
 
-rollout rlt_MaxBatchAnimeLoad "Batch Anime Load v0.4.1"(
+rollout rlt_MaxBatchAnimeLoad "Batch Anime Load v0.4.2"(
 	button btn_directory "Browse" width:175
 	multilistbox lst_files "Files: " height:15 offset:[-2,0]
 	button btn_none "None" align:#left width:35 height:16
 	button btn_all "All" offset:[0,-21] align:#right width:35 height:16
 	button btn_load "Load" offset:[0,-22] width:75
+    spinner time_interval "Time between anim" range:[0,100,30] align:#center
 	progressBar pgb_loadProgress
 
 	on btn_directory pressed do (
-		if (dir = getSavePath initialDir:(getDir #animations) caption:"Select the directory you want to load files from") != undefined then (
+		if (dir = getSavePath initialDir:(getDir #animations) caption:"Select the directory you want to load max files from") != undefined then (
 			btn_directory.text = dir
 			bm_files = getMaxFiles dir
 
@@ -56,8 +58,10 @@ rollout rlt_MaxBatchAnimeLoad "Batch Anime Load v0.4.1"(
 		)
 	)
 
+    -- Clear files selection
 	on btn_none pressed do ( lst_files.selection = #{} )
 
+    -- Select all files
 	on btn_all pressed do (
 		lst_files.selection = #{1..(lst_files.items.count)}
 	)
@@ -69,15 +73,13 @@ rollout rlt_MaxBatchAnimeLoad "Batch Anime Load v0.4.1"(
 		actionMan.executeAction 0 "40021"  -- Selection: Select all object in scene
 		max hide object toggle -- Hide geometry because we only need to load animation on the bone objects?
 
-		local loadNbr = 0
+		local loadCount = 0
 
         -- Reset note track
         while( numNoteTracks rootNode != 0 ) do deleteNoteTrack rootNode (getNoteTrack rootNode 1)
 
         -- Init new note track
         local NT = notetrack "animations"
-        --local ftm_cnt = FrameTagManager.CreateNewTag
-        --local ftm_gti = FrameTagManager.GetTagID
     	addNoteTrack rootNode NT
 
         local sequenceName = getSequenceName maxFileName
@@ -90,39 +92,39 @@ rollout rlt_MaxBatchAnimeLoad "Batch Anime Load v0.4.1"(
             local filepath = btn_directory.text + "\\" + filename
 
 			LoadSaveAnimation.setUpAnimsForLoad (selection as array)
-			local newStartTime = animationRange.end + 30f
+			local newStartTime = animationRange.end + time_interval.value
             local userAttr = #()
             local userValue = #()
+
+            -- Load the animation
             if (LoadSaveAnimation.getUserAttributes filepath &userAttr &userValue) == false then (
                 throw("Error, could not load animation attribute")
             )
             if (LoadSaveAnimation.loadAnimation filepath  (selection as array) insert:true insertTime:newStartTime) == false then (
 				throw("Error, could not load animation " + filepath)
             )
-            --currentTimeRange = gettimerange ((getNodeByName "skeleton_root").children[1].pos.controller[1].controller)
+
             newEndTime = newStartTime + (userValue[1] as float)
+
+            -- Update animation range
             animationRange = interval 0f newEndTime
 
-
+            -- Set notetrack name
             sequenceName = getSequenceName filename
             setAnimKey NT sequenceName newStartTime newEndTime
-            --local tag1 = ftm_cnt (sequenceName + " Start") newStartTime
-            --local id = ftm_gti tag1
-            --local tag2 = ftm_cnt (sequenceName + " End") newEndTime lockID:id
 
-            loadNbr += 1
+            loadCount += 1
 
 			-- Update ProgressBar
 			pgb_loadProgress.value = 100.*i/sel.count
 		)
 
 		-- Load complete
-		local msg = loadNbr as string + " animations have been loaded"
+		local msg = loadCount as string + " animations have been loaded"
 		print msg
 		messagebox msg title:"Batch Load completed"
         max hide object toggle
 
-       -- removeZeroWeight ()
 	)
 )
 createDialog rlt_MaxBatchAnimeLoad 210 377
