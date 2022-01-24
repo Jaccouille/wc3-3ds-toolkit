@@ -1,4 +1,4 @@
-macroScript BatchLoad category:"QuickEditUtil" tooltip:"Quick Edit Util" Icon:#("MergeAnim",4) (
+macroScript SceneSetupTools category:"Warcraft III Tools" tooltip:"Scene Setup Tools" Icon:#("MergeAnim",4) (
 
 include "RelicMaterialConverter.ms"
 
