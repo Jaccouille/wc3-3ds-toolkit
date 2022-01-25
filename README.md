@@ -75,7 +75,8 @@ The script will try to name the keynote track, it will look for the following ke
 word in the xaf filename :`attack, stand, sprint, run, die, weaponskill`.
 The name assigned follows Warcraft 3 animation sequence name format.
 
-Example: a xaf named `space_marine_attack_1.xaf` will load a animation sequence
+Example: a xaf named `space_marine_attack_1.xaf` will load an animation
+mation sequence
  named `Attack - 1`.
 
 ### Scene Setup Tools
