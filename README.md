@@ -17,31 +17,32 @@ Scripts from this repository aim at cutting editing time by automating
 recurrent task.
 
 If you have a 3D model composed of multiple animations which are contained in
-separate max file, those scripts allow you to export the animation from those max
-files into xaf file which can then be loaded into your scene/3D model.
+separate max file, those scripts allow you to batch export the animation from those max
+files into xaf file which can then be batch loaded into your scene/3D model.
 
 Following tools are available in this repository :
-* A macro script to batch export 3DS Max file animation as xaf
+* A macro script to batch export 3DS Max file animation under the xaf format
 * A macro script to batch load xaf animation file into a scene
-* A few options to prepare a scene for export toward MDX/MDL file
+* A few options to prepare a scene for export toward MDX/MDL format
 
 ## How to install
 Copy the wc3-toolkit-scripts folder into the scripts folder of your 3ds Max
 application.
-Example:
-`C:\Program Files\Autodesk\3ds Max 2020\scripts\`
 
-In 3ds Max, you have to run/import those scripts, click on the Utilies panel,
-click on the MAXScript button, then click on Run script, open each script
+Example: `C:\Program Files\Autodesk\3ds Max 2020\scripts\`
+
+In 3ds Max, you have to run/import those scripts, click on the `Utilies` panel,
+click on the `MAXScript` button, then click on `Run Script`, open each script
 from the wc3-toolkit-scripts folder.
 
 Those scripts are macroScript, meaning they’re triggered using a hotkey, you have
-to map an hotkey to those script.
-Click on Customize then Customize user interface, in the Keyboard panel, click
-on the Category rollout and select AnimationScript. Add a hotkey for
-Max Batch Anim Load & Max Batch Anim Save, e.g SHIFT + D and SHIFT + v.
-In the same rollout, look for "Warcraft III Tools" and click on it, add a hotkey
-for "Scene Setup Tools", e.g SHIFT + W.
+to map a hotkey to those script.
+
+Click on `Customize` then `Customize User Interface`, in the `Keyboard` tab, click
+on the `Category` rollout and select `AnimationScript`. Add a hotkey for
+`Max Batch Anim Load` & `Max Batch Anim Save`, e.g `SHIFT + D` and `SHIFT + V`.
+In the same rollout, look for `Warcraft III Tools` and click on it, add a hotkey
+for `Scene Setup Tools`, e.g `SHIFT + W`.
 
 Now you can press those hotkeys to open the tools and use them.
 
@@ -71,9 +72,11 @@ with the time interval between animation sequence in MDX/MDL file, I used NeoDex
 for the export, I don’t know how the exporter writes time interval between sequence.
 
 The script will try to name the keynote track, it will look for the following key
-word in the xaf filename :"attack, stand", sprint, run, die, weaponskill".
-The name assigned follows Warcraft 3 animation sequence name format. Example: a xaf named "space_marine_attack_1.xaf" will load a animation sequence
- named "Attack - 1".
+word in the xaf filename :`attack, stand, sprint, run, die, weaponskill`.
+The name assigned follows Warcraft 3 animation sequence name format.
+
+Example: a xaf named `space_marine_attack_1.xaf` will load a animation sequence
+ named `Attack - 1`.
 
 ### Scene Setup Tools
 This macroScript contains 3 options to configure a scene before exporting it
