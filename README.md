@@ -35,12 +35,20 @@ In 3ds Max, you have to run/import those scripts, click on the `Utilies` panel,
 click on the `MAXScript` button, then click on `Run Script`, open each script
 from the wc3-toolkit-scripts folder.
 
+![](https://i.imgur.com/IN8zmdA.jpeg)
+_Adding the scripts to 3DS Max._
+
 Those scripts are macroScript, meaning they’re triggered using a hotkey, you have
 to map a hotkey to those script.
 
 Click on `Customize` then `Customize User Interface`, in the `Keyboard` tab, click
 on the `Category` rollout and select `AnimationScript`. Add a hotkey for
 `Max Batch Anim Load` & `Max Batch Anim Save`, e.g `SHIFT + D` and `SHIFT + V`.
+
+![](https://i.imgur.com/qtTf9Bf.jpeg)
+_Setting the hotkeys for the macroScript._
+
+
 In the same rollout, look for `Warcraft III Tools` and click on it, add a hotkey
 for `Scene Setup Tools`, e.g `SHIFT + W`.
 
