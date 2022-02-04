@@ -1,3 +1,10 @@
+
+
+https://user-images.githubusercontent.com/7768858/152455068-1abdd63a-a952-451d-b830-10120b21ec2f.mov
+
+_Video featuring the scripts usage_
+
+
 # Warcraft 3 Tool kit for 3DS Max
 This repository contains a few 3DS max script that aims at quickly
 configure a scene to be exported as a MDX/MDL file used by Warcraft 3.
