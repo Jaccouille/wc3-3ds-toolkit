@@ -5,17 +5,15 @@ function RelicToWarcraftMaterial =
     local new_mat_nbr = 0
 
     -- Relic Materials are contained in a MultiMaterial
-    local Editable_meshes = for item in objects where
+    local Editable_meshes = for item in objects where \
     (isKindOf item.material MultiMaterial) collect item
 
 	-- Get multi material
 	local multiMat = getMeditMaterial 1
 
-    print("Iterating over materials")
+    print("Iterating over material")
     -- Creating WC3 Materials
     for i = 1 to multiMat.count do (
-        local subMaterial = multiMat.materialList[i]
-        print(subMaterial.name)
         if (classOf subMaterial == RelicMaterial) then
         (
             local wc3Material = Warcraft3 ()
@@ -34,7 +32,7 @@ function RelicToWarcraftMaterial =
 		for mesh in Editable_meshes do
 		(
 			local relicMatName = (filterString mesh.name "[,]")
-            for mat in meditmaterials where
+            for mat in meditmaterials where \
                 (classOf mat == Warcraft3 and findItem relicMatName mat.name != 0) do (
                 mesh.material = mat
                 mat.showInViewPort = true
