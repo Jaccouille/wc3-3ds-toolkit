@@ -3,15 +3,22 @@ macroScript BatchLoad category:"AnimationScript" tooltip:"Max Batch Anim Load" I
 -- Try to guess the sequence name using the filename
 function getSequenceName filename = (
     local sequenceName = "unnamed"
-    local animKeyWords = filterstring filename "_."
+    local animKeyWords = filterstring (getFileNameFile(filename)) "_."
     local commonWord = #("attack", "stand", "sprint", "run", "die", "weaponskill")
 
-    for j = 1 to commonWord.count do (
+    for j = 1 to commonWord.count while sequenceName == "unnamed" do (
         local idx = findItem animKeyWords commonWord[j]
         if idx != 0 then (
             sequenceName = animKeyWords[idx]
-            if animKeyWords[animKeyWords.count - 1][1] == "0" then (
-                sequenceName = sequenceName + " - " + animKeyWords[animKeyWords.count - 1][2]
+
+            -- A animation type can have multiple file, e.g :
+            -- melee_attack_01.xaf, melee_attack_02.xaf
+            -- we can cast the "01" string as an integer to get the animation
+            -- number and use it in the sequence name
+            -- result : melee_attack_01 -> Attack - 1
+            local keyWordCount = animKeyWords[animKeyWords.count] as integer
+            if keyWordCount != undefined then (
+                sequenceName = sequenceName + " - " + keyWordCount as string
             sequenceName[1] = toUpper sequenceName[1]
             )
         j = commonWord.count
