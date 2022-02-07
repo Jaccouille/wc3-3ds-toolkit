@@ -16,7 +16,7 @@ function removeZeroWeight = (
     )
 )
 
-rollout rlt_QuickEditUtil "Quick Edit Util 0.0.1"(
+rollout rlt_QuickEditUtil "Quick Edit Util v1.0.0"(
     checkbox chk_suprr_zero_weight "Remove Zero Weights" checked:true
     checkbox chk_convert_mat "Convert Relic to Warcraft material" checked:true
     checkbox chk_scale "Scale up to mdx standard" checked:true

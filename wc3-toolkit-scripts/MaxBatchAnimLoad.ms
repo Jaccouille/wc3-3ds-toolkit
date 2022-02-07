@@ -47,7 +47,7 @@ function getMaxFiles dir = (
 	theFiles
 )
 
-rollout rlt_MaxBatchAnimeLoad "Batch Anime Load v0.4.2"(
+rollout rlt_MaxBatchAnimeLoad "Batch Anime Load v1.0.0"(
 	button btn_directory "Browse" width:175
 	multilistbox lst_files "Files: " height:15 offset:[-2,0]
 	button btn_none "None" align:#left width:35 height:16
