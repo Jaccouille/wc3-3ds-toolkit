@@ -14,6 +14,8 @@ function RelicToWarcraftMaterial =
     print("Iterating over material")
     -- Creating WC3 Materials
     for i = 1 to multiMat.count do (
+        local subMaterial = multiMat.materialList[i]
+
         if (classOf subMaterial == RelicMaterial) then
         (
             local wc3Material = Warcraft3 ()
