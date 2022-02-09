@@ -71,13 +71,18 @@ You can choose a time interval between animation, this, however, seems irrevelan
 with the time interval between animation sequence in MDX/MDL file, I used NeoDex
 for the export, I don’t know how the exporter writes time interval between sequence.
 
-The script will try to name the keynote track, it will look for the following key
-word in the xaf filename :`attack, stand, sprint, run, die, weaponskill`.
+The script will try to name the keynote track,
+it will look for key words and counting number separated by "_" in the xaf filename,
+e.g "{word1}_{word2}_{keyword}_{animation count}.xaf",
+this name pattern is used by the Dawn of War 2 game.
+it will pick the first key word found, following key word are supported
+:`attack, stand, sprint, run, die, weaponskill`.
 The name assigned follows Warcraft 3 animation sequence name format.
 
 Example: a xaf named `space_marine_attack_1.xaf` will load an animation
 mation sequence
  named `Attack - 1`.
+
 
 ### Scene Setup Tools
 This macroScript contains 3 options to configure a scene before exporting it
