@@ -97,9 +97,10 @@ for the export, I don’t know how the exporter writes time interval between seq
 
 The script will try to name the keynote track,
 it will look for key words and counting number separated by "_" in the xaf filename,
-e.g "{word1}_{word2}_{keyword}_{animation count}.xaf",
+e.g `{word1}_{word2}_{keyword}_{animation count}.xaf`,
 this name pattern is used by the Dawn of War 2 game.
-it will pick the first key word found, following key word are supported
+
+It will pick the first key word found, following key word are supported
 :`attack, stand, sprint, run, die, weaponskill`.
 The name assigned follows Warcraft 3 animation sequence name format.
 
