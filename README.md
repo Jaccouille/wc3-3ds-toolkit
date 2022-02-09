@@ -1,8 +1,17 @@
 
 
-https://user-images.githubusercontent.com/7768858/152455068-1abdd63a-a952-451d-b830-10120b21ec2f.mov
+
+
+
+https://user-images.githubusercontent.com/7768858/153226431-ab9c5027-02e8-43d5-9d99-4b29c1b8c5a6.mp4
+
+
+
+
 
 _Video featuring the scripts usage_
+
+_Song name : Henry Mancini - Baby Elephant Walk_
 
 
 # Warcraft 3 Tool kit for 3DS Max
