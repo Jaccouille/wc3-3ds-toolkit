@@ -47,7 +47,7 @@ function getMaxFiles dir = (
 	theFiles
 )
 
-rollout rlt_MaxBatchAnimeLoad "Batch Anime Load v1.0.2"(
+rollout rlt_MaxBatchAnimeLoad "Batch Anime Load v1.0.3"(
 	button btn_directory "Browse" width:175
 	multilistbox lst_files "Files: " height:15 offset:[-2,0]
 	button btn_none "None" align:#left width:35 height:16
@@ -110,8 +110,8 @@ rollout rlt_MaxBatchAnimeLoad "Batch Anime Load v1.0.2"(
             local userValue = #()
 
             -- Edge case for keeping T pose animation
-            if (insert_at.value > 0 and newStartTime == 0) then(
-                newStartTime += insert_at.value
+            if (insert_at.value > 0 and i == 1) then(
+                newStartTime = insert_at.value as float
             )
 
             -- Load the animation
