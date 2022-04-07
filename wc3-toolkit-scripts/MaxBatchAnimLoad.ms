@@ -47,13 +47,15 @@ function getMaxFiles dir = (
 	theFiles
 )
 
-rollout rlt_MaxBatchAnimeLoad "Batch Anime Load v1.0.0"(
+rollout rlt_MaxBatchAnimeLoad "Batch Anime Load v1.0.2"(
 	button btn_directory "Browse" width:175
 	multilistbox lst_files "Files: " height:15 offset:[-2,0]
 	button btn_none "None" align:#left width:35 height:16
 	button btn_all "All" offset:[0,-21] align:#right width:35 height:16
 	button btn_load "Load" offset:[0,-22] width:75
-    spinner time_interval "Time between anim" range:[0,100,30] align:#center
+    radiobuttons radio_relative  labels:#("Relative", "Absolute") default:1
+    spinner insert_at "Insert At Frame" range:[0,10000,10] align:#center type:#integer
+    spinner time_interval "Time between anim" range:[0,100,30] align:#center type:#integer
 	progressBar pgb_loadProgress
 
 	on btn_directory pressed do (
@@ -89,8 +91,12 @@ rollout rlt_MaxBatchAnimeLoad "Batch Anime Load v1.0.0"(
         local NT = notetrack "animations"
     	addNoteTrack rootNode NT
 
-        local sequenceName = getSequenceName maxFileName
-        setAnimKey NT sequenceName animationRange.start animationRange.end
+        local relative
+        if (radio_relative.state == 1) then (
+            relative = true
+        ) else (
+            relative = false
+        )
 
 		for i = 1 to sel.count do (
 
@@ -99,18 +105,24 @@ rollout rlt_MaxBatchAnimeLoad "Batch Anime Load v1.0.0"(
             local filepath = btn_directory.text + "\\" + filename
 
 			LoadSaveAnimation.setUpAnimsForLoad (selection as array)
-			local newStartTime = animationRange.end + time_interval.value
+            local newStartTime = animationRange.end + (time_interval.value as float)
             local userAttr = #()
             local userValue = #()
+
+            -- Edge case for keeping T pose animation
+            if (insert_at.value > 0 and newStartTime == 0) then(
+                newStartTime += insert_at.value
+            )
 
             -- Load the animation
             if (LoadSaveAnimation.getUserAttributes filepath &userAttr &userValue) == false then (
                 throw("Error, could not load animation attribute")
             )
-            if (LoadSaveAnimation.loadAnimation filepath  (selection as array) insert:true insertTime:newStartTime) == false then (
+            if (LoadSaveAnimation.loadAnimation filepath  (selection as array) relative:relative insert:true insertTime:newStartTime) == false then (
 				throw("Error, could not load animation " + filepath)
             )
 
+            -- TODO: Check if userValue is undefined
             newEndTime = newStartTime + (userValue[1] as float)
 
             -- Update animation range
