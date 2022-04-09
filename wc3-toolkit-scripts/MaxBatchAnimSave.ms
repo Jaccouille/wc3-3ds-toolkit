@@ -20,6 +20,8 @@ rollout rlt_MaxBatchAnimeSave "Batch Anime Save v1.0.0"(
 	button btn_none "None" align:#left width:35 height:16
 	button btn_all "All" offset:[0,-21] align:#right width:35 height:16
 	button btn_save "Save" offset:[0,-22] width:75
+    checkbox chk_rename_bone "Rename duplicated bone" checked:true
+    toolTip:"If 2 bones got identical name, rename the second one by appending an unique ID to it"
 	progressBar pgb_saveProgress
 
 	on btn_directory pressed do (
@@ -56,11 +58,22 @@ rollout rlt_MaxBatchAnimeSave "Batch Anime Save v1.0.0"(
 			max hide object toggle
 			BoneNodes = selection as array
 
+            if chk_rename_bone.checked then (
+                boneNames = #()
+                for i = 1 to BoneNodes.count do (
+                    if (appendIfUnique boneNames BoneNodes[i].name) == false then (
+                        local bn = BoneNodes[i].name
+                        BoneNodes[i].name = uniquename bn
+                        print ("Renamed " + BoneNodes[i].name + " to " + BoneNodes[i].name)
+                    )
+                )
+            )
+
 			--LoadSaveAnimation.setUpAnimsForSave nodeArray keyable:true
             userAttr = #("end")
             userValue = #(animationRange.end as string)
 
-			if (LoadSaveAnimation.saveAnimation newFileName  BoneNodes userAttr userValue) == false then (
+			if (LoadSaveAnimation.saveAnimation newFileName BoneNodes userAttr userValue) == false then (
 				local msg = "Error, could not save animation " + newFileName
 				print msg
 				messagebox msg title:"Animation Save Error"
