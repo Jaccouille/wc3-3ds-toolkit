@@ -64,6 +64,7 @@ rollout rlt_MaxBatchAnimeLoad "Batch Anime Load v1.0.4"(
 	button btn_none "None" align:#left width:35 height:16
 	button btn_all "All" offset:[0,-21] align:#right width:35 height:16
 	button btn_load "Load" offset:[0,-22] width:75
+    checkbox chk_rename_bone "Rename duplicated bone" checked:false
     radiobuttons radio_relative  labels:#("Relative", "Absolute") default:1
     spinner insert_at "Insert At Frame" range:[0,10000,10] align:#center type:#integer
     spinner time_interval "Time between anim" range:[0,100,30] align:#center type:#integer
@@ -118,7 +119,10 @@ rollout rlt_MaxBatchAnimeLoad "Batch Anime Load v1.0.4"(
                 actionMan.executeAction 0 "40021"  -- Selection: Select all object in scene
                 max hide object toggle -- Hide geometry because we only need to load animation on the bone objects?
                 BoneNodes = selection as array
-                renameBone BoneNodes
+
+                if chk_rename_bone.checked then (
+                    renameBone BoneNodes
+                )
 
                 LoadSaveAnimation.setUpAnimsForLoad BoneNodes
                 local newStartTime = animationRange.end + (time_interval.value as float)
@@ -134,18 +138,13 @@ rollout rlt_MaxBatchAnimeLoad "Batch Anime Load v1.0.4"(
                 if (LoadSaveAnimation.getUserAttributes filepath &userAttr &userValue) == false then (
                     throw("Error, could not load animation attribute")
                 )
-                print filepath
-                print BoneNodes
-                print "debug 1 " + (newStartTime as string)
                 if (LoadSaveAnimation.loadAnimation filepath  BoneNodes relative:relative insert:true insertTime:newStartTime) == false then (
                     throw("Error, could not load animation " + filepath)
                 )
 
-                print "debug 2"
             -- TODO: Check if userValue is undefined
                 newEndTime = newStartTime + (userValue[1] as float)
 
-                print "debug 3"
             -- Update animation range
                 animationRange = interval 0f newEndTime
 
