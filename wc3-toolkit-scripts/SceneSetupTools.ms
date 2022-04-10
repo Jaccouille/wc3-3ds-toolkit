@@ -93,17 +93,31 @@ function parseSequenceData sequenceDataStr =
     data
 )
 
-rollout rlt_QuickEditUtil "Quick Edit Util v1.0.1"(
+rollout rlt_QuickEditUtil "Quick Edit Util v1.0.2"(
     checkbox chk_suprr_zero_weight "Remove Zero Weights" checked:true
     checkbox chk_convert_mat "Convert Relic to Warcraft material" checked:true
     checkbox chk_scale "Scale up to mdx standard" checked:true
     spinner spin_scale "Scaling Value" range:[0,100,60] align:#center
-    button btn_save_seq "Save Sequences Names"
-    toolTip:"Save current note track keys name with their position in a txt file"
-    button btn_load_seq "Load Sequences Names"
-    toolTip:"WARNING: This action will replace current scene note track keys by the one loaded from the selected file"
+    -- button btn_save_seq "Save Sequences Names"
+    -- toolTip:"Save current note track keys name with their position in a txt file"
+    -- button btn_load_seq "Load Sequences Names"
+    -- toolTip:"WARNING: This action will replace current scene note track keys by the one loaded from the selected file"
     button btn_exec "Execute Quick Edit"
+    button btn_rename_bone "Rename duplicated bones"
 
+    on btn_rename_bone pressed do (
+        actionMan.executeAction 0 "40021"  -- Selection: Select all object in scene
+        max hide object toggle -- Hide geometry because we only need to load animation on the bone objects?
+        BoneNodes = selection as array
+        boneNames = #()
+        for i = 1 to BoneNodes.count do (
+            if (appendIfUnique boneNames BoneNodes[i].name) == false then (
+                local bn = BoneNodes[i].name
+                BoneNodes[i].name = uniquename bn
+                print ("Renamed " + BoneNodes[i].name + " to " + BoneNodes[i].name)
+            )
+        )
+    )
     on btn_save_seq pressed do (
         filename = getSaveFileName types:"TXT File (*.txt)|*.txt"
         if filename != undefined then (

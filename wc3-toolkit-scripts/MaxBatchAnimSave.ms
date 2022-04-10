@@ -2,6 +2,17 @@ macroScript BatchSave category:"AnimationScript" tooltip:"Max Batch Anim Save" I
 
 global MaxFileTypeExtensions = #("max")
 
+function renameBone boneNodes = (
+    boneNames = #()
+    for i = 1 to BoneNodes.count do (
+        if (appendIfUnique boneNames BoneNodes[i].name) == false then (
+            local bn = BoneNodes[i].name
+            BoneNodes[i].name = uniquename bn
+            print ("Renamed " + BoneNodes[i].name + " to " + BoneNodes[i].name)
+        )
+    )
+)
+
 function getMaxFiles dir = (
 	local theFiles = #()
 
@@ -14,13 +25,14 @@ function getMaxFiles dir = (
 	theFiles
 )
 
-rollout rlt_MaxBatchAnimeSave "Batch Anime Save v1.0.1"(
+rollout rlt_MaxBatchAnimeSave "Batch Anime Save v1.0.2"(
 	button btn_directory "Browse" width:175
 	multilistbox lst_files "Files: " height:15 offset:[-2,0]
 	button btn_none "None" align:#left width:35 height:16
 	button btn_all "All" offset:[0,-21] align:#right width:35 height:16
 	button btn_save "Save" offset:[0,-22] width:75
-    checkbox chk_rename_bone "Rename duplicated bone" checked:true
+    checkbox chk_key_per_frame "Key Per Frame" checked:false
+    checkbox chk_rename_bone "Rename duplicated bone" checked:false
     toolTip:"If 2 bones got identical name, rename the second one by appending an unique ID to it"
 	progressBar pgb_saveProgress
 
@@ -46,6 +58,7 @@ rollout rlt_MaxBatchAnimeSave "Batch Anime Save v1.0.1"(
 		for i = 1 to sel.count do append toSave (btn_directory.text + "\\" + lst_files.items[sel[i]])
 
 		local saveNbr = 0
+        local key_per_frame = false
 		for i = 1 to sel.count do (
 			if ((loadMaxFile toSave[i] quiet:true)  == false) then (
 				print toSave[i]
@@ -59,21 +72,17 @@ rollout rlt_MaxBatchAnimeSave "Batch Anime Save v1.0.1"(
 			BoneNodes = selection as array
 
             if chk_rename_bone.checked then (
-                boneNames = #()
-                for i = 1 to BoneNodes.count do (
-                    if (appendIfUnique boneNames BoneNodes[i].name) == false then (
-                        local bn = BoneNodes[i].name
-                        BoneNodes[i].name = uniquename bn
-                        print ("Renamed " + BoneNodes[i].name + " to " + BoneNodes[i].name)
-                    )
-                )
+                renameBone BoneNodes
+            )
+            if chk_key_per_frame.checked then (
+                key_per_frame = true
             )
 
 			--LoadSaveAnimation.setUpAnimsForSave nodeArray keyable:true
             userAttr = #("end")
             userValue = #(animationRange.end as string)
 
-			if (LoadSaveAnimation.saveAnimation newFileName BoneNodes userAttr userValue) == false then (
+			if (LoadSaveAnimation.saveAnimation newFileName BoneNodes userAttr userValue keyableTracks:key_per_frame) == false then (
 				local msg = "Error, could not save animation " + newFileName
 				print msg
 				messagebox msg title:"Animation Save Error"

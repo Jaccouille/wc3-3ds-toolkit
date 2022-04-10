@@ -47,7 +47,18 @@ function getMaxFiles dir = (
 	theFiles
 )
 
-rollout rlt_MaxBatchAnimeLoad "Batch Anime Load v1.0.3"(
+function renameBone BoneNodes = (
+    boneNames = #()
+    for i = 1 to BoneNodes.count do (
+        if (appendIfUnique boneNames BoneNodes[i].name) == false then (
+            local bn = BoneNodes[i].name
+            BoneNodes[i].name = uniquename bn
+            print ("Renamed " + BoneNodes[i].name + " to " + BoneNodes[i].name)
+        )
+    )
+)
+
+rollout rlt_MaxBatchAnimeLoad "Batch Anime Load v1.0.4"(
 	button btn_directory "Browse" width:175
 	multilistbox lst_files "Files: " height:15 offset:[-2,0]
 	button btn_none "None" align:#left width:35 height:16
@@ -79,8 +90,6 @@ rollout rlt_MaxBatchAnimeLoad "Batch Anime Load v1.0.3"(
 		local toLoad = #()
 		local sel = (lst_files.selection as array)
 
-		actionMan.executeAction 0 "40021"  -- Selection: Select all object in scene
-		max hide object toggle -- Hide geometry because we only need to load animation on the bone objects?
 
 		local loadCount = 0
 
@@ -98,45 +107,61 @@ rollout rlt_MaxBatchAnimeLoad "Batch Anime Load v1.0.3"(
             relative = false
         )
 
-		for i = 1 to sel.count do (
+        try (
+            for i = 1 to sel.count do (
 
-            local filename = lst_files.items[sel[i]]
-            -- Construct file path
-            local filepath = btn_directory.text + "\\" + filename
+                local filename = lst_files.items[sel[i]]
+                -- Construct file path
+                local filepath = btn_directory.text + "\\" + filename
 
-			LoadSaveAnimation.setUpAnimsForLoad (selection as array)
-            local newStartTime = animationRange.end + (time_interval.value as float)
-            local userAttr = #()
-            local userValue = #()
 
-            -- Edge case for keeping T pose animation
-            if (insert_at.value > 0 and i == 1) then(
-                newStartTime = insert_at.value as float
-            )
+                actionMan.executeAction 0 "40021"  -- Selection: Select all object in scene
+                max hide object toggle -- Hide geometry because we only need to load animation on the bone objects?
+                BoneNodes = selection as array
+                renameBone BoneNodes
 
-            -- Load the animation
-            if (LoadSaveAnimation.getUserAttributes filepath &userAttr &userValue) == false then (
-                throw("Error, could not load animation attribute")
-            )
-            if (LoadSaveAnimation.loadAnimation filepath  (selection as array) relative:relative insert:true insertTime:newStartTime) == false then (
-				throw("Error, could not load animation " + filepath)
-            )
+                LoadSaveAnimation.setUpAnimsForLoad BoneNodes
+                local newStartTime = animationRange.end + (time_interval.value as float)
+                local userAttr = #()
+                local userValue = #()
 
+                -- Edge case for keeping T pose animation
+                if (insert_at.value > 0 and i == 1) then(
+                    newStartTime = insert_at.value as float
+                )
+
+                -- Load the animation
+                if (LoadSaveAnimation.getUserAttributes filepath &userAttr &userValue) == false then (
+                    throw("Error, could not load animation attribute")
+                )
+                print filepath
+                print BoneNodes
+                print "debug 1 " + (newStartTime as string)
+                if (LoadSaveAnimation.loadAnimation filepath  BoneNodes relative:relative insert:true insertTime:newStartTime) == false then (
+                    throw("Error, could not load animation " + filepath)
+                )
+
+                print "debug 2"
             -- TODO: Check if userValue is undefined
-            newEndTime = newStartTime + (userValue[1] as float)
+                newEndTime = newStartTime + (userValue[1] as float)
 
+                print "debug 3"
             -- Update animation range
-            animationRange = interval 0f newEndTime
+                animationRange = interval 0f newEndTime
 
-            -- Set notetrack name
-            sequenceName = getSequenceName filename
-            setAnimKey NT sequenceName newStartTime newEndTime
+                -- Set notetrack name
+                sequenceName = getSequenceName filename
+                setAnimKey NT sequenceName newStartTime newEndTime
 
-            loadCount += 1
+                loadCount += 1
 
-			-- Update ProgressBar
-			pgb_loadProgress.value = 100.*i/sel.count
-		)
+                -- Update ProgressBar
+                pgb_loadProgress.value = 100.*i/sel.count
+            )
+        ) catch (
+            local e = getCurrentException()
+            messagebox e title:"Error encountered while loading animation"
+        )
 
 		-- Load complete
 		local msg = loadCount as string + " animations have been loaded"
